@@ -1,464 +1,76 @@
-<p><a href="jeoparty.html">Go to Jeoparty Game</a></p>
 <!doctype html>
-<html lang="en" class="h-full">
- <head>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Craft Supply Builder</title>
+  <title>Afloat Rec Tools</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Source+Sans+3:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-html, body { height: 100%; margin: 0; }
-body { font-family: 'Source Sans 3', sans-serif; }
-h1, h2, h3 { font-family: 'DM Serif Display', serif; }
-.craft-card { transition: all 0.3s ease; }
-.craft-card:hover { transform: translateY(-2px); }
-.on-hand-row { opacity: 0.55; }
-.on-hand-row td:nth-child(3), .on-hand-row td:nth-child(4) { text-decoration: line-through; }
-.fade-in { animation: fadeIn 0.4s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.slider-track { -webkit-appearance: none; appearance: none; height: 8px; border-radius: 4px; outline: none; }
-.slider-track::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-.slider-track::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-@media print {
-  .no-print { display: none !important; }
-  body { background: white !important; }
-}
-</style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full overflow-auto">
-  <div id="app-wrapper" class="w-full min-h-full" style="background: #1a1a2e;"><!-- Header -->
-   <header class="w-full px-6 py-8 text-center" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
-    <div class="max-w-4xl mx-auto">
-     <div class="flex items-center justify-center gap-3 mb-2"><span class="text-3xl">🎨</span>
-      <h1 id="page-title" class="text-4xl md:text-5xl" style="color: #e94560;">Craft Supply Builder</h1><span class="text-3xl">✂️</span>
-     </div>
-     <p id="subtitle" class="text-lg mt-2" style="color: #a8b2c1; font-family: 'Source Sans 3', sans-serif;">Plan your group craft activities</p>
+    body { font-family: 'Source Sans 3', sans-serif; margin: 0; min-height: 100vh; background: #1a1a2e; color: #eaeaea; }
+    h1, h2 { font-family: 'DM Serif Display', serif; }
+    .nav-card {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      text-decoration: none;
+      color: #eaeaea;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .nav-card:hover {
+      transform: translateY(-4px);
+      border-color: #e94560;
+      box-shadow: 0 8px 30px rgba(233, 69, 96, 0.15);
+    }
+    .nav-card .icon { font-size: 3rem; }
+    .nav-card .title { font-family: 'DM Serif Display', serif; font-size: 1.25rem; color: #e94560; }
+    .nav-card .desc { font-size: 0.875rem; color: #a8b2c1; }
+  </style>
+</head>
+<body>
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl mb-3" style="color: #e94560;">Afloat Rec Tools</h1>
+      <p class="text-lg text-gray-400">Your hub for recreation activities and resources</p>
+    </header>
+
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <a href="/craft-supply-builder.html" class="nav-card">
+        <span class="icon">🎨</span>
+        <span class="title">Craft Supply Builder</span>
+        <span class="desc">Plan supplies for group craft activities</span>
+      </a>
+
+       <a href="/jeopardy.html" class="nav-card">
+        <span class="icon">🎯</span>
+        <span class="title">Jeopardy Game</span>
+        <span class="desc">Play trivia with teams and scoreboards</span>
+      </a>
+
+       <a href="/message-board.html" class="nav-card">
+        <span class="icon">💬</span>
+        <span class="title">Message Board</span>
+        <span class="desc">Post and read community messages</span>
+      </a>
+
+       <a href="/excel.html" class="nav-card">
+        <span class="icon">📊</span>
+        <span class="title">Excel File</span>
+        <span class="desc">Access the shared spreadsheet</span>
+      </a>
+
+       <a href="/survey.html" class="nav-card">
+        <span class="icon">📝</span>
+        <span class="title">Survey</span>
+        <span class="desc">Share your feedback with us</span>
+      </a>
     </div>
-   </header><!-- Controls -->
-   <div class="no-print w-full px-4 py-6">
-    <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-6"><!-- Activity Select -->
-     <div class="rounded-xl p-5" style="background: #16213e; border: 1px solid #0f3460;"><label for="activity-select" class="block text-sm font-semibold mb-2" style="color: #e94560;">Select Activity</label> <select id="activity-select" class="w-full rounded-lg px-4 py-3 text-base font-medium focus:outline-none focus:ring-2" style="background: #1a1a2e; color: #eaeaea; border: 1px solid #0f3460; focus-ring-color: #e94560;"> <option value="">— Choose a craft activity —</option> </select>
-     </div><!-- Group Size -->
-     <div class="rounded-xl p-5" style="background: #16213e; border: 1px solid #0f3460;"><label for="group-slider" class="block text-sm font-semibold mb-2" style="color: #e94560;">Group Size: <span id="group-count" class="text-xl" style="color: #eaeaea;">10</span></label> <input type="range" id="group-slider" min="1" max="50" value="10" class="w-full slider-track" style="background: #0f3460;">
-     </div>
-    </div>
-   </div><!-- Supply List Container -->
-   <div id="supply-section" class="w-full px-4 pb-10 hidden fade-in">
-    <div class="max-w-4xl mx-auto"><!-- Budget Summary -->
-     <div id="budget-bar" class="rounded-xl p-5 mb-6 flex flex-wrap items-center justify-between gap-4" style="background: linear-gradient(135deg, #0f3460, #16213e); border: 1px solid #e94560;">
-      <div>
-       <p class="text-sm font-semibold" style="color: #e94560;">Estimated Budget</p>
-       <p id="budget-total" class="text-3xl font-bold" style="color: #eaeaea;">$0.00</p>
-      </div>
-      <div class="text-right">
-       <p class="text-sm" style="color: #a8b2c1;">Per person</p>
-       <p id="budget-per-person" class="text-xl font-semibold" style="color: #eaeaea;">$0.00</p>
-      </div>
-      <div class="text-right">
-       <p class="text-sm" style="color: #a8b2c1;">On hand savings</p>
-       <p id="budget-savings" class="text-xl font-semibold" style="color: #53d769;">$0.00</p>
-      </div>
-     </div><!-- Table -->
-     <div class="rounded-xl overflow-hidden" style="background: #16213e; border: 1px solid #0f3460;">
-      <div class="overflow-x-auto">
-       <table class="w-full text-left">
-        <thead>
-         <tr style="background: #0f3460;">
-          <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider" style="color: #e94560;">Supply Item</th>
-          <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-center" style="color: #e94560;">Qty Needed</th>
-          <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-right" style="color: #e94560;">Unit Price</th>
-          <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-right" style="color: #e94560;">Subtotal</th>
-          <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-center no-print" style="color: #e94560;">On Hand?</th>
-         </tr>
-        </thead>
-        <tbody id="supply-tbody"></tbody>
-       </table>
-      </div>
-     </div><!-- Print -->
-     <div class="no-print mt-6 flex gap-3 justify-end"><button onclick="window.print()" class="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all hover:opacity-80" style="background: #e94560; color: white;"> <i data-lucide="printer" style="width:16px;height:16px;"></i> Print List </button>
-     </div>
-    </div>
-   </div><!-- Empty State -->
-   <div id="empty-state" class="w-full px-4 py-16 text-center">
-    <div class="max-w-md mx-auto">
-     <div class="text-6xl mb-4">
-      🧶
-     </div>
-     <p class="text-xl font-semibold" style="color: #a8b2c1;">Select an activity above to generate your supply list</p>
-    </div>
-   </div>
-  </div>
-  <script>
-// ---- ACTIVITY DATA ----
-const activities = {
-  paint_night: {
-    name: "Paint Night",
-    emoji: "🖌️",
-    supplies: [
-      { name: "Canvas (11x14)", unit: 1, price: 4.50, per: "person" },
-      { name: "Acrylic Paint Set (basic colors)", unit: 1, price: 8.99, per: "shared", shared: 5 },
-      { name: "Paint Brushes (variety pack)", unit: 1, price: 5.99, per: "shared", shared: 4 },
-      { name: "Disposable Palette Plates", unit: 1, price: 0.30, per: "person" },
-      { name: "Easel (tabletop)", unit: 1, price: 7.99, per: "shared", shared: 1 },
-      { name: "Cup for Water", unit: 1, price: 0.25, per: "person" },
-      { name: "Paper Towels (roll)", unit: 1, price: 1.50, per: "shared", shared: 10 },
-      { name: "Apron / Smock", unit: 1, price: 1.99, per: "person" },
-      { name: "Drop Cloth / Table Cover", unit: 1, price: 3.99, per: "shared", shared: 8 }
-    ]
-  },
-  embroidery: {
-    name: "Hand Embroidery",
-    emoji: "🧵",
-    supplies: [
-      { name: "Embroidery Hoop (6 inch)", unit: 1, price: 2.50, per: "person" },
-      { name: "Cotton Fabric Square", unit: 1, price: 1.50, per: "person" },
-      { name: "Embroidery Floss (assorted 8-pack)", unit: 1, price: 3.99, per: "shared", shared: 3 },
-      { name: "Embroidery Needles (pack)", unit: 1, price: 2.99, per: "shared", shared: 5 },
-      { name: "Scissors (small)", unit: 1, price: 2.50, per: "shared", shared: 3 },
-      { name: "Transfer Pen / Pencil", unit: 1, price: 3.49, per: "shared", shared: 5 },
-      { name: "Printed Pattern Templates", unit: 1, price: 0.20, per: "person" },
-      { name: "Needle Threader", unit: 1, price: 0.50, per: "person" }
-    ]
-  },
-  vision_board: {
-    name: "Vision Board Making",
-    emoji: "📋",
-    supplies: [
-      { name: "Poster Board / Foam Board", unit: 1, price: 2.99, per: "person" },
-      { name: "Scrapbook Paper Pack (patterned)", unit: 1, price: 7.99, per: "shared", shared: 4 },
-      { name: "Magazines (for clipping)", unit: 2, price: 1.00, per: "person" },
-      { name: "Glue Sticks", unit: 1, price: 0.75, per: "person" },
-      { name: "Scissors", unit: 1, price: 1.99, per: "shared", shared: 2 },
-      { name: "Sticker Sheets (assorted)", unit: 1, price: 4.99, per: "shared", shared: 4 },
-      { name: "Washi Tape (set)", unit: 1, price: 5.99, per: "shared", shared: 5 },
-      { name: "Markers / Colored Pens", unit: 1, price: 6.99, per: "shared", shared: 4 },
-      { name: "Alphabet Stickers", unit: 1, price: 3.49, per: "shared", shared: 5 },
-      { name: "Embellishments (rhinestones, etc.)", unit: 1, price: 4.99, per: "shared", shared: 6 }
-    ]
-  },
-  faux_flowers: {
-    name: "Faux Flowers (Chenille Stems)",
-    emoji: "🌸",
-    supplies: [
-      { name: "Chenille Stems / Pipe Cleaners (assorted colors, 100pk)", unit: 1, price: 4.99, per: "shared", shared: 8 },
-      { name: "Green Chenille Stems (for stems, 50pk)", unit: 1, price: 3.49, per: "shared", shared: 10 },
-      { name: "Floral Tape (green)", unit: 1, price: 2.49, per: "shared", shared: 6 },
-      { name: "Wire Cutters", unit: 1, price: 4.99, per: "shared", shared: 4 },
-      { name: "Beads (assorted, for centers)", unit: 1, price: 3.99, per: "shared", shared: 6 },
-      { name: "Small Vase / Mason Jar", unit: 1, price: 1.50, per: "person" },
-      { name: "Floral Foam Block", unit: 1, price: 1.99, per: "shared", shared: 4 },
-      { name: "Ribbon (spool)", unit: 1, price: 2.99, per: "shared", shared: 8 }
-    ]
-  },
-  cookie_decorating: {
-    name: "Cookie Decorating",
-    emoji: "🍪",
-    supplies: [
-      { name: "Pre-baked Sugar Cookies (per person)", unit: 3, price: 0.75, per: "person" },
-      { name: "Royal Icing (batch mix)", unit: 1, price: 5.99, per: "shared", shared: 6 },
-      { name: "Food Coloring Gel Set", unit: 1, price: 7.99, per: "shared", shared: 15 },
-      { name: "Piping Bags (disposable, 12pk)", unit: 1, price: 3.99, per: "shared", shared: 10 },
-      { name: "Piping Tips Set", unit: 1, price: 5.99, per: "shared", shared: 10 },
-      { name: "Sprinkles (assorted, 6-pack)", unit: 1, price: 5.99, per: "shared", shared: 8 },
-      { name: "Edible Glitter", unit: 1, price: 4.99, per: "shared", shared: 15 },
-      { name: "Toothpicks (for detail work)", unit: 1, price: 1.29, per: "shared", shared: 20 },
-      { name: "Wax Paper Sheets", unit: 1, price: 0.15, per: "person" },
-      { name: "Cookie Box / Bag (take-home)", unit: 1, price: 0.60, per: "person" },
-      { name: "Disposable Gloves (pair)", unit: 1, price: 0.20, per: "person" }
-    ]
-  },
-  shrink_plastic: {
-    name: "Shrinky Dink Keychains",
-    emoji: "🔑",
-    supplies: [
-      { name: "Shrink Plastic Sheets (clear/white)", unit: 2, price: 0.75, per: "person" },
-      { name: "Colored Pencils / Permanent Markers", unit: 1, price: 6.99, per: "shared", shared: 4 },
-      { name: "Hole Punch (single)", unit: 1, price: 2.99, per: "shared", shared: 5 },
-      { name: "Keychain Rings with Chain", unit: 1, price: 0.35, per: "person" },
-      { name: "Jump Rings (small)", unit: 2, price: 0.10, per: "person" },
-      { name: "Scissors", unit: 1, price: 1.99, per: "shared", shared: 3 },
-      { name: "Parchment Paper (for baking)", unit: 1, price: 3.49, per: "shared", shared: 25 },
-      { name: "Toaster Oven (shared use)", unit: 1, price: 29.99, per: "shared", shared: 50 },
-      { name: "Flat Heavy Book (for pressing)", unit: 1, price: 0, per: "shared", shared: 10 },
-      { name: "Fine Grit Sandpaper (for clear sheets)", unit: 1, price: 1.29, per: "shared", shared: 8 },
-      { name: "Pliers (for jump rings)", unit: 1, price: 3.99, per: "shared", shared: 5 }
-    ]
-  },
-  bag_charms: {
-    name: "Bag / Sneaker Charms",
-    emoji: "👟",
-    supplies: [
-      { name: "Lobster Clasp Keyrings", unit: 2, price: 0.30, per: "person" },
-      { name: "Assorted Charms / Pendants (bulk 50pk)", unit: 1, price: 9.99, per: "shared", shared: 8 },
-      { name: "Letter Beads (alphabet set)", unit: 1, price: 4.99, per: "shared", shared: 6 },
-      { name: "Acrylic Beads (assorted)", unit: 1, price: 5.99, per: "shared", shared: 6 },
-      { name: "Jump Rings (assorted, 100pk)", unit: 1, price: 3.49, per: "shared", shared: 10 },
-      { name: "Jewelry Pliers Set", unit: 1, price: 7.99, per: "shared", shared: 4 },
-      { name: "Beading Wire / Cord", unit: 1, price: 3.99, per: "shared", shared: 8 },
-      { name: "Shoe Charm Adapters (for Croc-style)", unit: 2, price: 0.25, per: "person" },
-      { name: "Small Organza Gift Bags", unit: 1, price: 0.20, per: "person" }
-    ]
-  },
-  diy_lip_balm: {
-    name: "DIY Lip Balm",
-    emoji: "💋",
-    supplies: [
-      { name: "Beeswax Pellets (1 lb bag)", unit: 1, price: 9.99, per: "shared", shared: 25 },
-      { name: "Coconut Oil (jar)", unit: 1, price: 6.99, per: "shared", shared: 25 },
-      { name: "Shea Butter (8 oz)", unit: 1, price: 7.99, per: "shared", shared: 25 },
-      { name: "Lip Balm Tubes (empty)", unit: 2, price: 0.35, per: "person" },
-      { name: "Essential Oil / Flavor Oil (set)", unit: 1, price: 8.99, per: "shared", shared: 20 },
-      { name: "Lip-safe Colorant (set)", unit: 1, price: 6.99, per: "shared", shared: 20 },
-      { name: "Small Melting Pot / Double Boiler", unit: 1, price: 9.99, per: "shared", shared: 10 },
-      { name: "Disposable Pipettes (for pouring)", unit: 1, price: 0.15, per: "person" },
-      { name: "Mixing Sticks (wooden)", unit: 1, price: 0.10, per: "person" },
-      { name: "Labels / Stickers (for tubes)", unit: 2, price: 0.10, per: "person" }
-    ]
-  },
-  diy_lip_scrub: {
-    name: "DIY Lip Scrub",
-    emoji: "✨",
-    supplies: [
-      { name: "Granulated Sugar (2 lb bag)", unit: 1, price: 2.99, per: "shared", shared: 25 },
-      { name: "Coconut Oil (jar)", unit: 1, price: 6.99, per: "shared", shared: 20 },
-      { name: "Honey (squeeze bottle)", unit: 1, price: 4.99, per: "shared", shared: 20 },
-      { name: "Flavor Extract (vanilla, etc.)", unit: 1, price: 3.99, per: "shared", shared: 20 },
-      { name: "Lip-safe Colorant / Mica Powder", unit: 1, price: 5.99, per: "shared", shared: 20 },
-      { name: "Small Jars with Lids (2 oz)", unit: 1, price: 0.75, per: "person" },
-      { name: "Mixing Bowls (small)", unit: 1, price: 1.99, per: "shared", shared: 4 },
-      { name: "Measuring Spoons", unit: 1, price: 2.49, per: "shared", shared: 5 },
-      { name: "Mixing Spoons (disposable)", unit: 1, price: 0.10, per: "person" },
-      { name: "Labels / Stickers (for jars)", unit: 1, price: 0.10, per: "person" }
-    ]
-  },
-  leather_keychains: {
-    name: "Embossed Leather Keychains",
-    emoji: "🏷️",
-    supplies: [
-      { name: "Leather Blanks (pre-cut keychain shapes)", unit: 2, price: 1.25, per: "person" },
-      { name: "Leather Stamp Alphabet Set", unit: 1, price: 14.99, per: "shared", shared: 5 },
-      { name: "Leather Stamp Decorative Set", unit: 1, price: 12.99, per: "shared", shared: 5 },
-      { name: "Mallet / Maul", unit: 1, price: 8.99, per: "shared", shared: 4 },
-      { name: "Leather Dye / Antique Finish", unit: 1, price: 6.99, per: "shared", shared: 10 },
-      { name: "Daubers / Sponges (for dye)", unit: 1, price: 0.30, per: "person" },
-      { name: "Leather Sealant / Top Coat", unit: 1, price: 7.99, per: "shared", shared: 15 },
-      { name: "Keychain Hardware (ring + clip)", unit: 2, price: 0.50, per: "person" },
-      { name: "Water Spray Bottle (for dampening)", unit: 1, price: 1.99, per: "shared", shared: 5 },
-      { name: "Cutting Mat", unit: 1, price: 5.99, per: "shared", shared: 4 },
-      { name: "Disposable Gloves (pair)", unit: 1, price: 0.20, per: "person" }
-    ]
-  },
-  silversmithing: {
-    name: "Silversmithing (Silver Metal Clay)",
-    emoji: "💍",
-    supplies: [
-      { name: "Silver Metal Clay (10g packet)", unit: 1, price: 29.99, per: "person" },
-      { name: "Clay Roller / Acrylic Rod", unit: 1, price: 4.99, per: "shared", shared: 4 },
-      { name: "Thickness Slats / Playing Cards", unit: 1, price: 1.99, per: "shared", shared: 5 },
-      { name: "Texture Plates / Stamps", unit: 1, price: 8.99, per: "shared", shared: 4 },
-      { name: "Small Cutters (shapes)", unit: 1, price: 5.99, per: "shared", shared: 5 },
-      { name: "Needle / Sculpting Tools", unit: 1, price: 6.99, per: "shared", shared: 4 },
-      { name: "Fine Sanding Pads (set)", unit: 1, price: 3.99, per: "shared", shared: 5 },
-      { name: "Kiln / Torch Setup (shared)", unit: 1, price: 49.99, per: "shared", shared: 50 },
-      { name: "Firing Brick / Mesh", unit: 1, price: 6.99, per: "shared", shared: 10 },
-      { name: "Burnishing Tool / Brush", unit: 1, price: 4.99, per: "shared", shared: 4 },
-      { name: "Polishing Cloth", unit: 1, price: 1.50, per: "person" },
-      { name: "Bail / Jump Ring (for pendant)", unit: 1, price: 0.50, per: "person" },
-      { name: "Work Surface / Teflon Sheet", unit: 1, price: 3.99, per: "shared", shared: 4 }
-    ]
-  },
-  diamond_art: {
-    name: "Diamond Art",
-    emoji: "💎",
-    supplies: [
-      { name: "Diamond Painting Kit (small, 8x10)", unit: 1, price: 6.99, per: "person" },
-      { name: "Extra Diamond Pen / Applicator", unit: 1, price: 1.50, per: "person" },
-      { name: "Wax Pad (for pen grip)", unit: 1, price: 0.50, per: "person" },
-      { name: "Sorting Trays", unit: 1, price: 0.75, per: "person" },
-      { name: "Extra Diamond Drills (assorted colors)", unit: 1, price: 3.99, per: "shared", shared: 8 },
-      { name: "Tweezers", unit: 1, price: 1.49, per: "shared", shared: 4 },
-      { name: "Storage Bags (for leftover drills)", unit: 1, price: 0.10, per: "person" },
-      { name: "Light Pad (LED, for visibility)", unit: 1, price: 12.99, per: "shared", shared: 4 },
-      { name: "Frame (optional, 8x10)", unit: 1, price: 3.99, per: "person" }
-    ]
-  }
-};
-
-// ---- STATE ----
-let currentActivity = null;
-let groupSize = 10;
-let onHandItems = new Set();
-
-// ---- POPULATE DROPDOWN ----
-const select = document.getElementById('activity-select');
-Object.entries(activities).forEach(([key, act]) => {
-  const opt = document.createElement('option');
-  opt.value = key;
-  opt.textContent = `${act.emoji} ${act.name}`;
-  select.appendChild(opt);
-});
-
-// ---- CALCULATE QUANTITY ----
-function calcQty(supply, size) {
-  if (supply.per === "person") return supply.unit * size;
-  return Math.ceil(size / supply.shared) * supply.unit;
-}
-
-// ---- RENDER TABLE ----
-function renderSupplyList() {
-  const tbody = document.getElementById('supply-tbody');
-  const section = document.getElementById('supply-section');
-  const empty = document.getElementById('empty-state');
-
-  if (!currentActivity) {
-    section.classList.add('hidden');
-    empty.classList.remove('hidden');
-    return;
-  }
-
-  empty.classList.add('hidden');
-  section.classList.remove('hidden');
-  section.classList.add('fade-in');
-
-  const act = activities[currentActivity];
-  let totalBudget = 0;
-  let totalSavings = 0;
-
-  tbody.innerHTML = '';
-  act.supplies.forEach((supply, i) => {
-    const qty = calcQty(supply, groupSize);
-    const subtotal = qty * supply.price;
-    const isOnHand = onHandItems.has(`${currentActivity}_${i}`);
-
-    if (isOnHand) totalSavings += subtotal;
-    else totalBudget += subtotal;
-
-    const tr = document.createElement('tr');
-    tr.className = `border-t ${isOnHand ? 'on-hand-row' : ''}`;
-    tr.style.borderColor = '#0f3460';
-    tr.innerHTML = `
-      <td class="px-4 py-3 text-sm font-medium" style="color: #eaeaea;">
-        ${supply.name}
-        <span class="text-xs ml-1" style="color: #a8b2c1;">${supply.per === 'person' ? '(per person)' : `(shared per ${supply.shared})`}</span>
-      </td>
-      <td class="px-4 py-3 text-sm text-center font-semibold" style="color: #eaeaea;">${qty}</td>
-      <td class="px-4 py-3 text-sm text-right" style="color: #a8b2c1;">$${supply.price.toFixed(2)}</td>
-      <td class="px-4 py-3 text-sm text-right font-semibold" style="color: ${isOnHand ? '#a8b2c1' : '#eaeaea'};">$${subtotal.toFixed(2)}</td>
-      <td class="px-4 py-3 text-center no-print">
-        <button onclick="toggleOnHand('${currentActivity}_${i}')" class="w-7 h-7 rounded-md inline-flex items-center justify-center transition-all text-xs font-bold" style="background: ${isOnHand ? '#e94560' : '#0f3460'}; color: ${isOnHand ? 'white' : '#a8b2c1'}; border: 1px solid ${isOnHand ? '#e94560' : '#0f3460'};" aria-label="${isOnHand ? 'Remove from on hand' : 'Mark as on hand'}">
-          ${isOnHand ? '✓' : ''}
-        </button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  document.getElementById('budget-total').textContent = `$${totalBudget.toFixed(2)}`;
-  document.getElementById('budget-per-person').textContent = `$${(totalBudget / groupSize).toFixed(2)}`;
-  document.getElementById('budget-savings').textContent = `-$${totalSavings.toFixed(2)}`;
-}
-
-function toggleOnHand(key) {
-  if (onHandItems.has(key)) onHandItems.delete(key);
-  else onHandItems.add(key);
-  renderSupplyList();
-}
-
-// ---- EVENTS ----
-select.addEventListener('change', (e) => {
-  currentActivity = e.target.value || null;
-  onHandItems.clear();
-  renderSupplyList();
-});
-
-const slider = document.getElementById('group-slider');
-slider.addEventListener('input', (e) => {
-  groupSize = parseInt(e.target.value);
-  document.getElementById('group-count').textContent = groupSize;
-  renderSupplyList();
-});
-
-// ---- ELEMENT SDK ----
-const defaultConfig = {
-  page_title: "Craft Supply Builder",
-  subtitle: "Plan your group craft activities",
-  background_color: "#1a1a2e",
-  surface_color: "#16213e",
-  text_color: "#eaeaea",
-  primary_action_color: "#e94560",
-  secondary_action_color: "#a8b2c1",
-  font_family: "DM Serif Display",
-  font_size: 16
-};
-
-function applyConfig(config) {
-  const bg = config.background_color || defaultConfig.background_color;
-  const sf = config.surface_color || defaultConfig.surface_color;
-  const tx = config.text_color || defaultConfig.text_color;
-  const pa = config.primary_action_color || defaultConfig.primary_action_color;
-  const sa = config.secondary_action_color || defaultConfig.secondary_action_color;
-  const ff = config.font_family || defaultConfig.font_family;
-  const fs = config.font_size || defaultConfig.font_size;
-
-  document.getElementById('app-wrapper').style.background = bg;
-  document.querySelector('header').style.background = `linear-gradient(135deg, ${bg} 0%, ${sf} 50%, #0f3460 100%)`;
-
-  document.getElementById('page-title').textContent = config.page_title || defaultConfig.page_title;
-  document.getElementById('page-title').style.color = pa;
-  document.getElementById('page-title').style.fontFamily = `${ff}, serif`;
-  document.getElementById('page-title').style.fontSize = `${fs * 2.5}px`;
-
-  document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
-  document.getElementById('subtitle').style.color = sa;
-  document.getElementById('subtitle').style.fontSize = `${fs}px`;
-
-  // Apply colors to controls
-  document.querySelectorAll('[style*="color: #e94560"]').forEach(el => el.style.color = pa);
-  document.querySelectorAll('[style*="color: #eaeaea"]').forEach(el => el.style.color = tx);
-  document.querySelectorAll('[style*="color: #a8b2c1"]').forEach(el => el.style.color = sa);
-}
-
-if (window.elementSdk) {
-  window.elementSdk.init({
-    defaultConfig,
-    onConfigChange: async (config) => { applyConfig(config); },
-    mapToCapabilities: (config) => ({
-      recolorables: [
-        { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-        { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-        { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-        { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
-        { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
-      ],
-      borderables: [],
-      fontEditable: {
-        get: () => config.font_family || defaultConfig.font_family,
-        set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-      },
-      fontSizeable: {
-        get: () => config.font_size || defaultConfig.font_size,
-        set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-      }
-    }),
-    mapToEditPanelValues: (config) => new Map([
-      ["page_title", config.page_title || defaultConfig.page_title],
-      ["subtitle", config.subtitle || defaultConfig.subtitle]
-    ])
-  });
-}
-
-// Init icons
-lucide.createIcons();
-
-// Style slider thumb color
-const style = document.createElement('style');
-style.textContent = `.slider-track::-webkit-slider-thumb { background: #e94560; } .slider-track::-moz-range-thumb { background: #e94560; }`;
-document.head.appendChild(style);
-</script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ea23eee77a6cc0c',t:'MTc3NTgyOTI5MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</div>
+</body>
 </html>
