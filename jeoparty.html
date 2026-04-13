@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeoparty Game</title>
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body { font-family: 'DM Sans', sans-serif; }
+    .playfair { font-family: 'Playfair Display', serif; }
+
+    /* --- SUBTLE BRIGHTENING (B1-A CLEAN CONTRAST) --- */
+    .board-cell {
+      background: linear-gradient(145deg, #222f9a, #111a63);
+      border: 2px solid #4c5bd4;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .board-cell::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, rgba(255,255,255,0.08), transparent);
+      pointer-events: none;
+    }
+    .board-cell:hover:not(.used) {
+      transform: scale(1.04);
+      border-color: #ffdf6b;
+      box-shadow: 0 0 22px rgba(255,223,107,0.35);
+    }
+    .board-cell.used {
+      background: rgba(17,26,99,0.35);
+      border-color: rgba(76,91,212,0.25);
+      cursor: default;
+      opacity: 0.35;
+    }
+    .board-cell.used .cell-value { display: none; }
+
+    .category-header {
+      background: linear-gradient(145deg, #222f9a, #111a63);
+      border: 2px solid #4c5bd4;
+    }
+
+    .modal-backdrop {
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+    }
+
+    .question-card {
+      background: linear-gradient(160deg, #222f9a, #0f2a7a);
+      border: 3px solid #ffdf6b;
+      box-shadow: 0 0 60px rgba(255,223,107,0.18), 0 25px 50px rgba(0,0,0,0.5);
+    }
+
+    .team-pill {
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.12);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .team-pill:hover { border-color: #ffdf6b; }
+    .team-pill.selected { border-color: #ffdf6b; background: rgba(255,223,107,0.12); }
+
+    .score-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: all 0.15s;
+      min-width: 110px;
+      flex: 0 0 auto;
+    }
+
+    .toast {
+      animation: slideUp 0.3s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .gold-text { color: #ffdf6b; }
+    .gold-bg { background-color: #ffdf6b; }
+
+    .back-link {
+      color: #ffdf6b;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+    .back-link:hover { opacity: 1; }
+  </style>
+</head>
+
+<body class="h-full overflow-auto" style="background: linear-gradient(135deg, #070b34 0%, #0a1128 50%, #0d0221 100%);">
+
+  <div id="app" class="h-full w-full flex flex-col p-3 md:p-5 gap-3">
+
+    <header class="flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="back-link">&larr; Home</a>
+        <h1 id="main-title" class="playfair text-2xl md:text-4xl gold-text tracking-tight">JEOPARTY!</h1>
+      </div>
+
+      <button id="reset-btn" onclick="resetGame()"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white/60 hover:text-white border border-white/10 hover:border-white/30 transition-all">
+        <i data-lucide="rotate-ccw" style="width:14px;height:14px;"></i> Reset
+      </button>
+    </header>
+
+    <div id="game-board" class="grid grid-cols-6 gap-1.5 md:gap-2 flex-1 min-h-0"></div>
+    <div id="scoreboard" class="flex gap-2 overflow-x-auto flex-shrink-0 pb-1"></div>
+
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+    <div class="question-card rounded-2xl w-full max-w-2xl p-6 md:p-10 flex flex-col items-center gap-6 text-center">
+      <div class="text-xs font-bold tracking-widest uppercase text-white/50" id="modal-category"></div>
+      <div class="gold-text text-lg font-bold" id="modal-value"></div>
+      <p class="text-white text-xl md:text-2xl font-medium leading-relaxed" id="modal-question"></p>
+
+      <div id="modal-answer" class="hidden">
+        <p class="text-green-300 text-lg md:text-xl font-bold mt-2" id="modal-answer-text"></p>
+      </div>
+
+      <button id="reveal-btn" onclick="revealAnswer()"
+        class="gold-bg text-gray-900 font-bold px-6 py-2.5 rounded-xl hover:brightness-110 transition-all text-sm">
+        Reveal Answer
+      </button>
+
+      <div id="award-section" class="hidden w-full">
+        <p class="text-white/50 text-xs uppercase tracking-widest mb-3">Award points to:</p>
+        <div id="team-buttons" class="flex flex-wrap justify-center gap-2 mb-4"></div>
+
+        <div class="flex justify-center gap-2">
+          <button onclick="awardPoints(1)" class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-bold transition-all">Correct</button>
+          <button onclick="awardPoints(-1)" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-all">Wrong</button>
+          <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-bold transition-all">Skip</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[60] pointer-events-none"></div>
+
+  <!-- SCRIPT -->
+  <script>
+    const CATEGORIES = [
+      {
+        name: "Popular Music & TV",
+        questions: [
+          { q: "This 'Friends' character famously yelled 'PIVOT!' while moving a couch.", a: "Ross Geller", v: 200 },
+          { q: "Taylor Swift's 2020 album that she surprise-released during lockdown.", a: "Folklore", v: 400 },
+          { q: "The streaming service that produced 'Squid Game'.", a: "Netflix", v: 600 },
+          { q: "Beyonce's 2016 visual album exploring Black womanhood.", a: "Lemonade", v: 800 },
+          { q: "The fictional town in 'Stranger Things' where the Upside Down opens.", a: "Hawkins, Indiana", v: 1000 }
+        ]
+      },
+      {
+        name: "Technology",
+        questions: [
+          { q: "The company that created the iPhone.", a: "Apple", v: 200 },
+          { q: "This language is the backbone of most websites' styling.", a: "CSS (Cascading Style Sheets)", v: 400 },
+          { q: "Elon Musk's AI company that created the Grok chatbot.", a: "xAI", v: 600 },
+          { q: "The year the World Wide Web was invented by Tim Berners-Lee.", a: "1989", v: 800 },
+          { q: "The quantum computing concept where a qubit exists in multiple states.", a: "Superposition", v: 1000 }
+        ]
+      },
+      {
+        name: "US History",
+        questions: [
+          { q: "The number of original American colonies.", a: "13", v: 200 },
+          { q: "The president who signed the Emancipation Proclamation.", a: "Abraham Lincoln", v: 400 },
+          { q: "This 1803 purchase doubled the size of the United States.", a: "The Louisiana Purchase", v: 600 },
+          { q: "The constitutional amendment that granted women's suffrage.", a: "19th Amendment", v: 800 },
+          { q: "The 1954 Supreme Court case that ended school segregation.", a: "Brown v. Board of Education", v: 1000 }
+        ]
+      },
+      {
+        name: "Science",
+        questions: [
+          { q: "The chemical symbol for water.", a: "H2O", v: 200 },
+          { q: "The force that keeps planets orbiting the Sun.", a: "Gravity", v: 400 },
+          { q: "The organelle known as the 'powerhouse of the cell'.", a: "Mitochondria", v: 600 },
+          { q: "The speed of light in miles per second, approximately.", a: "186,000 miles per second", v: 800 },
+          { q: "The phenomenon where particles affect each other instantly across distance.", a: "Quantum Entanglement", v: 1000 }
+        ]
+      },
+      {
+        name: "Sports",
+        questions: [
+          { q: "The number of players on a standard soccer team.", a: "11", v: 200 },
+          { q: "Serena Williams has won this many Grand Slam singles titles.", a: "23", v: 400 },
+          { q: "The city that hosted the first modern Olympics in 1896.", a: "Athens, Greece", v: 600 },
+          { q: "The NBA player who scored 100 points in a single game.", a: "Wilt Chamberlain", v: 800 },
+          { q: "The only country to have played in every FIFA World Cup.", a: "Brazil", v: 1000 }
+        ]
+      },
+      {
+        name: "Space",
+        questions: [
+          { q: "The closest planet to the Sun.", a: "Mercury", v: 200 },
+          { q: "The year humans first walked on the Moon.", a: "1969", v: 400 },
+          { q: "The space telescope launched in 2021 to replace Hubble.", a: "James Webb Space Telescope", v: 600 },
+          { q: "The largest volcano in our solar system, found on Mars.", a: "Olympus Mons", v: 800 },
+          { q: "The boundary where the Sun's solar wind meets interstellar space.", a: "Heliopause", v: 1000 }
+        ]
+      }
+    ];
+
+    let scores = [0, 0, 0, 0, 0];
+    let usedCells = new Set();
+    let currentQ = null;
+    let selectedTeam = 0;
+
+    function buildBoard() {
+      const board = document.getElementById('game-board');
+      board.innerHTML = '';
+
+      CATEGORIES.forEach((cat) => {
+        const h = document.createElement('div');
+        h.className = 'category-header rounded-lg flex items-center justify-center p-2 text-center';
+        h.innerHTML = '<span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-white/90 leading-tight">' + cat.name + '</span>';
+        board.appendChild(h);
+      });
+
+      for (let row = 0; row < 5; row++) {
+        CATEGORIES.forEach((cat, ci) => {
+          const key = ci + '-' + row;
+          const cell = document.createElement('div');
+          cell.className = 'board-cell rounded-lg flex items-center justify-center ' + (usedCells.has(key) ? 'used' : '');
+          cell.dataset.key = key;
+          cell.innerHTML = '<span class="cell-value playfair text-lg md:text-2xl gold-text font-black">$' + cat.questions[row].v + '</span>';
+
+          if (!usedCells.has(key)) {
+            cell.onclick = () => openQuestion(ci, row);
+          }
+
+          board.appendChild(cell);
+        });
+      }
+    }
+
+    function buildScoreboard() {
+      const sb = document.getElementById('scoreboard');
+      sb.innerHTML = '';
+
+      for (let i = 0; i < 5; i++) {
+        const name = 'Team ' + (i + 1);
+        const card = document.createElement('div');
+        card.className = 'score-card rounded-xl px-4 py-3 text-center';
+        card.style.minWidth = '120px';
+
+        card.innerHTML =
+          '<div class="text-xs font-bold uppercase tracking-wider text-white/60">' + name + '</div>' +
+          '<div class="playfair text-2xl font-black mt-1 ' + (scores[i] < 0 ? 'text-red-400' : 'gold-text') + '">' +
+          (scores[i] < 0 ? '-' : '') + '$' + Math.abs(scores[i]) + '</div>';
+
+        sb.appendChild(card);
+      }
+    }
+
+    function openQuestion(ci, row) {
+      const key = ci + '-' + row;
+      if (usedCells.has(key)) return;
+
+      currentQ = { ci: ci, row: row, key: key };
+      selectedTeam = 0;
+
+      const q = CATEGORIES[ci].questions[row];
+
+      document.getElementById('modal-category').textContent = CATEGORIES[ci].name;
+      document.getElementById('modal-value').textContent = '$' + q.v;
+      document.getElementById('modal-question').textContent = q.q;
+      document.getElementById('modal-answer-text').textContent = q.a;
+
+      document.getElementById('modal-answer').classList.add('hidden');
+      document.getElementById('reveal-btn').classList.remove('hidden');
+      document.getElementById('award-section').classList.add('hidden');
+
+      document.getElementById('modal').classList.remove('hidden');
+    }
+
+    function revealAnswer() {
+      document.getElementById('modal-answer').classList.remove('hidden');
+      document.getElementById('reveal-btn').classList.add('hidden');
+      document.getElementById('award-section').classList.remove('hidden');
+      buildTeamButtons();
+    }
+
+    function buildTeamButtons() {
+      const container = document.getElementById('team-buttons');
+      container.innerHTML = '';
+
+      for (let i = 0; i < 5; i++) {
+        const name = 'Team ' + (i + 1);
+        const btn = document.createElement('button');
+
+        btn.className =
+          'team-pill px-4 py-2 rounded-lg text-white text-sm font-semibold ' +
+          (i === selectedTeam ? 'selected' : '');
+
+        btn.textContent = name;
+        btn.onclick = () => {
+          selectedTeam = i;
+          buildTeamButtons();
+        };
+
+        container.appendChild(btn);
+      }
+    }
+
+    function awardPoints(multiplier) {
+      if (!currentQ) return;
+
+      const val = CATEGORIES[currentQ.ci].questions[currentQ.row].v;
+      scores[selectedTeam] += val * multiplier;
+
+      usedCells.add(currentQ.key);
+      closeModal();
+      buildBoard();
+      buildScoreboard();
+
+      const name = 'Team ' + (selectedTeam + 1);
+      showToast(name + ' ' + (multiplier > 0 ? '+' : '-') + '$' + val);
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+
+      if (currentQ) {
+        usedCells.add(currentQ.key);
+        buildBoard();
+      }
+
+      currentQ = null;
+    }
+
+    function resetGame() {
+      scores = [0, 0, 0, 0, 0];
+      usedCells.clear();
+      currentQ = null;
+
+      buildBoard();
+      buildScoreboard();
+      showToast("Game reset!");
+    }
+
+    function showToast(msg) {
+      const c = document.getElementById('toast-container');
+      const t = document.createElement('div');
+
+      t.className =
+        'toast gold-bg text-gray-900 font-bold px-5 py-2.5 rounded-xl text-sm shadow-lg';
+
+      t.textContent = msg;
+      c.appendChild(t);
+
+      setTimeout(() => t.remove(), 2000);
+    }
+
+    buildBoard();
+    buildScoreboard();
+lucide.createIcons();
+</script>
+
+</body>
+</html>
+
