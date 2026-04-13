@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Message Board</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Source Sans 3', sans-serif; margin: 0; min-height: 100vh; background: #1a1a2e; color: #eaeaea; }
+    h1, h2 { font-family: 'DM Serif Display', serif; }
+    .msg-card { animation: fadeIn 0.3s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <div class="max-w-3xl mx-auto px-4 py-8">
+    <div class="flex items-center gap-4 mb-8">
+      <a href="/index.html" class="text-sm font-semibold text-pink-400 hover:text-pink-300 transition-colors">&larr; Home</a>
+      <h1 class="text-3xl md:text-4xl" style="color: #e94560;">Message Board</h1>
+    </div>
+
+    <!-- Post form -->
+    <div class="rounded-xl p-5 mb-8" style="background: #16213e; border: 1px solid #0f3460;">
+      <h2 class="text-lg mb-4" style="color: #e94560;">Post a Message</h2>
+      <form id="msg-form" class="space-y-4">
+        <div>
+          <label for="name-input" class="block text-sm font-semibold mb-1 text-gray-400">Your Name</label>
+          <input type="text" id="name-input" placeholder="Anonymous" maxlength="100"
+            class="w-full rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+            style="background: #1a1a2e; color: #eaeaea; border: 1px solid #0f3460;">
+        </div>
+        <div>
+          <label for="msg-input" class="block text-sm font-semibold mb-1 text-gray-400">Message</label>
+          <textarea id="msg-input" rows="3" maxlength="1000" required placeholder="Write your message..."
+            class="w-full rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-vertical"
+            style="background: #1a1a2e; color: #eaeaea; border: 1px solid #0f3460;"></textarea>
+        </div>
+        <button type="submit" id="submit-btn"
+          class="px-6 py-2.5 rounded-lg font-semibold text-sm text-white transition-all hover:opacity-80"
+          style="background: #e94560;">Post Message</button>
+      </form>
+    </div>
+
+    <!-- Messages -->
+    <div id="messages-container">
+      <p id="loading-text" class="text-center text-gray-500">Loading messages...</p>
+    </div>
+  </div>
+
+  <!-- FIREBASE SCRIPT -->
+  <script type="module">
+    // Firebase imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy }
+      from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-f8xd2oRz938RzNk2t1GcE9bsDjpOdm0",
+      authDomain: "afloat-rec-tools.firebaseapp.com",
+      projectId: "afloat-rec-tools",
+      storageBucket: "afloat-rec-tools.firebasestorage.app",
+      messagingSenderId: "813909501570",
+      appId: "1:813909501570:web:5e886f3f207f9437f7f69b"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById('msg-form');
+    const container = document.getElementById('messages-container');
+    const loadingText = document.getElementById('loading-text');
+
+    function escapeHtml(text) {
+      const d = document.createElement('div');
+      d.textContent = text;
+      return d.innerHTML;
+    }
+
+    function timeAgo(ts) {
+      const diff = Date.now() - ts.toMillis();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + 'm ago';
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + 'h ago';
+      const days = Math.floor(hrs / 24);
+      return days + 'd ago';
+    }
+
+    async function loadMessages() {
+      const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        container.innerHTML = '<p class="text-center text-gray-500 py-8">No messages yet. Be the first to post!</p>';
+        return;
+      }
+
+      container.innerHTML = "";
+      snapshot.forEach(doc => {
+        const m = doc.data();
+        container.innerHTML += `
+          <div class="msg-card rounded-xl p-4 mb-3" style="background: #16213e; border: 1px solid #0f3460;">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-semibold text-sm" style="color: #e94560;">${escapeHtml(m.name)}</span>
+              <span class="text-xs text-gray-500">${timeAgo(m.timestamp)}</span>
+            </div>
+            <p class="text-sm text-gray-300 whitespace-pre-wrap">${escapeHtml(m.message)}</p>
+          </div>
+        `;
+      });
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Posting...';
+
+      await addDoc(collection(db, "messages"), {
+        name: document.getElementById('name-input').value || 'Anonymous',
+        message: document.getElementById('msg-input').value,
+        timestamp: serverTimestamp()
+      });
+
+      document.getElementById('msg-input').value = '';
+      await loadMessages();
+
+      btn.disabled = false;
+      btn.textContent = 'Post Message';
+    });
+
+    loadMessages();
+  </script>
+</body>
+</html>
